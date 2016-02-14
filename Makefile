@@ -1,7 +1,5 @@
 delMig:
-	rm -rf Plan/migrations/*
-	rm -rf itinerary/migrations/*
-	rm -rf signup/migrations/*
-	touch Plan/migrations/__init__.py
-	touch itinerary/migrations/__init__.py
-	touch signup/migrations/__init__.py
+	rm -rf */migrations/*
+	touch complaint/migrations/__init__.py
+	touch review/migrations/__init__.py
+	touch user/migrations/__init__.py

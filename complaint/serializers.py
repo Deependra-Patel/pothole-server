@@ -1,7 +1,12 @@
 from rest_framework import serializers
 from .models import Complaint
-class ComplaintSerializer(serializers.ModelSerializer):
+class ComplaintEntrySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Complaint
 		fields = ('id', 'ReporterId', 'City', 'Fixed', 'Reviewed', 'Type',
-		 'Severity', 'PhotoPath', 'Info', 'Created')
+		 'Severity', 'Image', 'Info', 'Created')
+
+class AddComplaintSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Complaint
+		fields = ('ReporterId','City', 'Reviewed', 'Type', 'Severity', 'Image', 'Info')		
