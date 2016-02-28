@@ -87,8 +87,8 @@ DATABASES = {
         'NAME': 'potholedb',
         'HOST': 'localhost',
         'PORT': '5432',
-        'USER': 'potholeUser',
-        'PASSWORD': '12ka4'
+        'USER': 'potholeuser',
+        'PASSWORD': 'mypass'
     }
 }
 
@@ -138,3 +138,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny'
     ]
 }
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

@@ -8,58 +8,46 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-class GetComplaints(APIView):
+class ComplaintList(APIView):
+	"""
+	Add complaint or get all complaints
+	"""
 	def get(self, request, format=None):
 		complaints = Complaint.objects.all()
 		serializer = ComplaintEntrySerializer(complaints, many=True)
 		return Response(serializer.data)
 
-
-class AddComplaint(APIView):
 	def post(self, request, format=None):
-		print(request.data)
-		serializer = AddComplaintSerializer(data = request.data)       
+		serializer = ComplaintAddSerializer(data = request.data)       
 		if serializer.is_valid():
 			serializer.save()  
 			return Response(serializer.data)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#     def post(self, request, format=None):
-#         serializer = UserSerializer(data=request.DATA)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ComplaintDetail(APIView):
+	"""
+    Retrieve, update or delete a complaint instance.
+    """
+	def get_object(self, pk):
+		try:
+			return Complaint.objects.get(pk=pk)
+		except Complaint.DoesNotExist:
+			raise Http404
 
-#     def delete(self, request, pk, format=None):
-#         user = self.get_object(pk)
-#         user.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+	def get(self, request, pk, format=None):
+		complaint = self.get_object(pk)
+		complaint = ComplaintEntrySerializer(complaint)
+		return Response(complaint.data)
 
-# class UserDetail(APIView):
-#     """
-#     Retrieve, update or delete a user instance.
-#     """
-#     def get_object(self, pk):
-#         try:
-#             return User.objects.get(pk=pk)
-#         except User.DoesNotExist:
-#             raise Http404
+	def put(self, request, pk, format=None):
+		complaint = self.get_object(pk)
+		serializer = ComplaintAddSerializer(data = request.data)       
+		if serializer.is_valid():
+			serializer.save()  
+			return Response(serializer.data)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#     def get(self, request, pk, format=None):
-#         user = self.get_object(pk)
-#         user = UserSerializer(user)
-#         return Response(user.data)
-
-#     def put(self, request, pk, format=None):
-#         user = self.get_object(pk)
-#         serializer = UserSerializer(user, data=request.DATA)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def delete(self, request, pk, format=None):
-#         user = self.get_object(pk)
-#         user.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT
+	def delete(self, request, pk, format=None):
+		complaint = self.get_object(pk)
+		complaint.delete()
+		return Response(status=status.HTTP_204_NO_CONTENT)

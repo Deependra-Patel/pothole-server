@@ -6,7 +6,7 @@ class ComplaintEntrySerializer(serializers.ModelSerializer):
 		fields = ('id', 'ReporterId', 'City', 'Fixed', 'Reviewed', 'Type',
 		 'Severity', 'Image', 'Info', 'Created')
 
-class AddComplaintSerializer(serializers.ModelSerializer):
+class ComplaintAddSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Complaint
-		fields = ('ReporterId','City', 'Reviewed', 'Type', 'Severity', 'Image', 'Info')		
+		fields = ('ReporterId','City', 'Reviewed', 'Type', 'Severity', 'Image', 'Info')
