@@ -27,9 +27,12 @@ class ComplaintList(APIView):
 		# 	return Response(serializer.data)
 		# return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		try:
-			imageData = b64decode(request.data['Image'])
+			imgStr = request.data['Image']
+			head, tail = imgStr.split(',')
+			imageData = b64decode(tail)
+			ext = head.split('/')[1].split(';')[0]
 			complaint = Complaint(ReporterId = User.objects.get(pk=request.data['ReporterId']), City = request.data['City'], 
-				Image = ContentFile(imageData, 'potholeImagexccxvxcv.png'))
+				Image = ContentFile(imageData, 'potholeImage.'+ext))
 			complaint.save()
 			return Response(ComplaintEntrySerializer(complaint).data)
 		except Exception as e:
