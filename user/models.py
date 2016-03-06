@@ -16,4 +16,6 @@ class User(models.Model):
 	Credit = models.FloatField(default=0)
 	DeActivate = models.BooleanField(default=False)
 	Created = models.DateTimeField(auto_now_add=True)
+	def __str__(self):
+		return "Id "+str(self.id)+" Name "+self.Name
 # Create your models here.

@@ -1,12 +1,12 @@
-from django.shortcuts import render
-
-from .models import User
 from django.http import Http404
 
 from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Q
+from complaint.models import Complaint
+from complaint.serializers import ComplaintEntrySerializer
 
 class UserList(APIView):
 	"""
@@ -51,3 +51,13 @@ class UserDetail(APIView):
 		user = self.get_object(pk)
 		user.delete()
 		return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserGetComplaintForReview(APIView):
+	"""
+	Gives list of complaints (atmost 3) nearby to user for review
+	"""
+	def get(self, request, pk, format=None):
+		complaints = Complaint.objects.filter(Q(Status = 'a') & ~Q(ReporterId = pk)).exclude(review__UserId = pk)[:3]
+		complaints = ComplaintEntrySerializer(complaints, many=True)
+		return Response(complaints.data)

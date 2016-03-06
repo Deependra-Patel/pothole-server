@@ -3,10 +3,10 @@ from .models import Complaint
 class ComplaintEntrySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Complaint
-		fields = ('id', 'ReporterId', 'City', 'Fixed', 'Reviewed', 'Type',
+		fields = ('id', 'ReporterId', 'City', 'Fixed', 'Type', 'Status',
 		 'Severity', 'Image', 'Info', 'Created')
 
 class ComplaintAddSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Complaint
-		fields = ('ReporterId','City', 'Reviewed', 'Type', 'Severity', 'Image', 'Info')
+		fields = ('ReporterId','City', 'Type', 'Severity', 'Image', 'Info')

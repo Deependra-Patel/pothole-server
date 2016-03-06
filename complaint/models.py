@@ -12,11 +12,14 @@ class Complaint(models.Model):
 	# Location = models.PointField(srid=4326)
 	City = models.CharField(max_length=3)
 	Fixed = models.BooleanField(default='False')
-	Reviewed = models.BooleanField(default='False', blank=True)
 	#'p' - pothole, 's'- speedbreaker
 	Type = models.CharField(max_length=1, default='p')
+	#'a'-Added, 'r'-reviewed, 'd'-resolved, 'f'-falseReport
+	Status = models.CharField(max_length=1, default='a')
 	Severity = models.IntegerField(default=5, blank=True)
 	Image = models.ImageField("Image", upload_to=settings.MEDIA_ROOT+"/images")
 	Info = models.CharField(max_length=300, null=True, blank=True)
 	Created = models.DateTimeField(auto_now_add=True)
+	def __str__(self):
+		return "Id "+str(self.id)+", ReporterId "+str(self.ReporterId)+" "+self.Status
 
