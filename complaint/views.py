@@ -11,6 +11,7 @@ from rest_framework import status
 from base64 import b64decode
 from django.core.files.base import ContentFile
 
+
 class ComplaintList(APIView):
     """
     Add complaint or get all complaints
@@ -31,13 +32,15 @@ class ComplaintList(APIView):
             head, tail = imgStr.split(',')
             imageData = b64decode(tail)
             ext = head.split('/')[1].split(';')[0]
-            complaint = Complaint(ReporterId = User.objects.get(pk=request.data['ReporterId']), City = request.data['City'],
-                Image = ContentFile(imageData, 'potholeImage.'+ext))
+            complaint = Complaint(ReporterId=User.objects.get(pk=request.data['ReporterId']), City=request.data['City'],
+                                  Type=request.data["Type"], Severity=request.data["Severity"],
+                                  Image=ContentFile(imageData, 'potholeImage.'+ext), Info=request.data["Info"])
             complaint.save()
             return Response(ComplaintEntrySerializer(complaint).data)
         except Exception as e:
-            print (e)
+            print (e.message)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class ComplaintDetail(APIView):
     """

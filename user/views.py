@@ -42,7 +42,7 @@ class UserDetail(APIView):
 
     def put(self, request, pk, format=None):
         user = self.get_object(pk)
-        serializer = UserEntrySerializer(data = request.data)
+        serializer = UserEntrySerializer(user, data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -54,9 +54,23 @@ class UserDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class UserFromEmail(APIView):
+    """
+    Gives user details given Email
+    """
+    def post(self, request, format=None):
+        try:
+            user = User.objects.filter(Email=request.data["Email"])[0]
+            serializer = UserEntrySerializer(user)
+            return Response(serializer.data)
+        except Exception as e:
+            print e.message
+            raise Http404
+
+
 class UserGetComplaintForReview(APIView):
     """
-    Gives list of complaints (atmost 3) nearby to user for review
+    Gives list of complaints (at most 3) nearby to user for review
     """
     def get(self, request, pk, format=None):
         complaints = Complaint.objects.filter(Q(Status = 'a') & ~Q(ReporterId = pk)).exclude(review__UserId = pk)[:3]
