@@ -11,4 +11,9 @@ class Review(models.Model):
     Response = models.CharField(max_length=1) #y-yes it is a pothole, n-not pothole, m-maybe
     Comment = models.CharField(max_length=100, null=True, blank=True)
     Created = models.DateTimeField(auto_now_add=True)
-# Create your models here.
+
+    """
+    To ensure one user per complaint
+    """
+    class Meta:
+        unique_together = ('ComplaintId', 'UserId')
