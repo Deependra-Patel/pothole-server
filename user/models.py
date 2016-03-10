@@ -10,7 +10,7 @@ class User(models.Model):
     HomeLocation = models.PointField(srid=4326, null=True, blank=True)
     City = models.CharField(max_length=3)
     Phone = models.CharField(max_length=10)
-    Email = models.CharField(max_length=40)
+    Email = models.CharField(max_length=40, unique=True)
     FbId = models.CharField(max_length=20, null=True, blank=True)
     Rating = models.FloatField(default=50)
     Credit = models.FloatField(default=0)

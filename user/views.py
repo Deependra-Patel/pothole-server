@@ -8,6 +8,7 @@ from django.db.models import Q
 from complaint.models import Complaint
 from complaint.serializers import ComplaintEntrySerializer
 
+
 class UserList(APIView):
     """
     Add user or get all users
@@ -18,7 +19,7 @@ class UserList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = UserAddSerializer(data = request.data)
+        serializer = UserEntrySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

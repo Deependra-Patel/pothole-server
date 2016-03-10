@@ -3,9 +3,13 @@ from .models import Complaint
 
 
 class ComplaintEntrySerializer(serializers.ModelSerializer):
+    Lat = serializers.CharField(source='latitude')
+    Long = serializers.CharField(source='longitude')
+
     class Meta:
         model = Complaint
-        fields = ('id', 'ReporterId', 'City', 'Fixed', 'Type', 'Status', 'Severity', 'Image', 'Info', 'Created')
+        fields = ('id', 'ReporterId', 'City', 'Fixed', 'Type', 'Status', 'Severity', 'Image', 'Info', 'Created',
+                  'Lat', 'Long')
 
 
 class ComplaintAddSerializer(serializers.ModelSerializer):
