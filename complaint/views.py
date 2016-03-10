@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 from .models import Complaint
+from django.contrib.gis.db import models
+from django.contrib.gis.geos import GEOSGeometry, Point
 from user.models import User
 from django.http import Http404
 
@@ -32,9 +34,11 @@ class ComplaintList(APIView):
             head, tail = imgStr.split(',')
             imageData = b64decode(tail)
             ext = head.split('/')[1].split(';')[0]
-            complaint = Complaint(ReporterId=User.objects.get(pk=request.data['ReporterId']), City=request.data['City'],
-                                  Type=request.data["Type"], Severity=request.data["Severity"],
-                                  Image=ContentFile(imageData, 'potholeImage.'+ext), Info=request.data["Info"])
+            imgFile = ContentFile(imageData, 'potholeImage.'+ext)
+            pt = Point(float(request.data['Long']), float(request.data['Lat']))
+            complaint = Complaint(ReporterId=User.objects.get(pk=request.data['ReporterId']), Location=pt,
+                                  City=request.data['City'], Type=request.data["Type"],
+                                  Severity=request.data["Severity"], Image=imgFile, Info=request.data["Info"])
             complaint.save()
             return Response(ComplaintEntrySerializer(complaint).data)
         except Exception as e:
@@ -59,7 +63,7 @@ class ComplaintDetail(APIView):
 
     def put(self, request, pk, format=None):
         complaint = self.get_object(pk)
-        serializer = ComplaintAddSerializer(data = request.data)
+        serializer = ComplaintAddSerializer(complaint, data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

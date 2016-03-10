@@ -6,11 +6,11 @@ from django.contrib.gis.db import models
 
 class User(models.Model):
     Name = models.CharField(max_length=50)
-    Address = models.CharField(max_length=200)
+    Address = models.CharField(max_length=200, null=True, blank=True)
     HomeLocation = models.PointField(srid=4326, null=True, blank=True)
     City = models.CharField(max_length=3)
     Phone = models.CharField(max_length=10)
-    Email = models.CharField(max_length=40, null=True, blank=True)
+    Email = models.CharField(max_length=40)
     FbId = models.CharField(max_length=20, null=True, blank=True)
     Rating = models.FloatField(default=50)
     Credit = models.FloatField(default=0)

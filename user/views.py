@@ -18,7 +18,7 @@ class UserList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = UserEntrySerializer(data = request.data)
+        serializer = UserAddSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

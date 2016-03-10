@@ -40,7 +40,7 @@ class ReviewDetail(APIView):
 
     def put(self, request, pk, format=None):
         Review = self.get_object(pk)
-        serializer = ReviewAddSerializer(data = request.data)
+        serializer = ReviewAddSerializer(Review, data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
