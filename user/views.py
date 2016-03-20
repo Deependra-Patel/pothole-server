@@ -13,6 +13,7 @@ class UserList(APIView):
     """
     Add user or get all users
     """
+
     def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserEntrySerializer(users, many=True)
@@ -22,7 +23,7 @@ class UserList(APIView):
         serializer = UserEntrySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -30,6 +31,7 @@ class UserDetail(APIView):
     """
     Retrieve, update or delete a user instance.
     """
+
     def get_object(self, pk):
         try:
             return User.objects.get(pk=pk)
@@ -43,7 +45,7 @@ class UserDetail(APIView):
 
     def put(self, request, pk, format=None):
         user = self.get_object(pk)
-        serializer = UserEntrySerializer(user, data = request.data)
+        serializer = UserEntrySerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -59,6 +61,7 @@ class UserFromEmail(APIView):
     """
     Gives user details given Email
     """
+
     def post(self, request, format=None):
         try:
             user = User.objects.filter(Email=request.data["Email"])[0]
@@ -73,7 +76,8 @@ class UserGetComplaintForReview(APIView):
     """
     Gives list of complaints (at most 3) nearby to user for review
     """
+
     def get(self, request, pk, format=None):
-        complaints = Complaint.objects.filter(Q(Status = 'a') & ~Q(ReporterId = pk)).exclude(review__UserId = pk)[:3]
+        complaints = Complaint.objects.filter(Q(Status='a') & ~Q(ReporterId=pk)).exclude(review__UserId=pk)[:3]
         complaints = ComplaintEntrySerializer(complaints, many=True)
         return Response(complaints.data)
