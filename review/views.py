@@ -1,21 +1,27 @@
-from serializers import ReviewAddSerializer, ReviewEntrySerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Review
+"""
+Contains views for all the reviews of complaints by users
+"""
 from django.http import Http404
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .models import Review
+from .serializers import ReviewAddSerializer, ReviewEntrySerializer
+
 
 class ReviewList(APIView):
     """
     Add Review or get all Reviews
     """
+
     def get(self, request, format=None):
         reviews = Review.objects.all()
         serializer = ReviewEntrySerializer(reviews, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = ReviewAddSerializer(data = request.data)
+        serializer = ReviewAddSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -27,6 +33,7 @@ class ReviewDetail(APIView):
     """
     Retrieve, update or delete a Review instance.
     """
+
     def get_object(self, pk):
         try:
             return Review.objects.get(pk=pk)
@@ -40,7 +47,7 @@ class ReviewDetail(APIView):
 
     def put(self, request, pk, format=None):
         Review = self.get_object(pk)
-        serializer = ReviewAddSerializer(Review, data = request.data)
+        serializer = ReviewAddSerializer(Review, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

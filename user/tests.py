@@ -1,6 +1,7 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
 from django.core.urlresolvers import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+
 from .models import User
 from .serializers import UserEntrySerializer
 
@@ -15,17 +16,20 @@ class AddUserTest(APITestCase):
             'FbId': 'deependra.patel.21',
             'Address': 'hostel 9, iit bombay, powai, mumbai 400076'
         }
+        self.user1 = None
 
     def _create_users(self):
-        self.user1 = User.objects.create(Name='Anupreet', Phone='9999999999', City='mum', Email='anu@gmail.com',
-                                         FbId='anupreet', Address='hostel 13, iitb', Rating=78, DeActivate=False,
+        self.user1 = User.objects.create(Name='Anupreet', Phone='9999999999', City='mum',
+                                         Email='anu@gmail.com',
+                                         FbId='anupreet', Address='hostel 13, iitb', Rating=78,
+                                         DeActivate=False,
                                          Credit=21, HomeLocation=None)
 
     def test_add_user(self):
         """
         Ensure we can create a new user
         """
-        url = reverse('user_list')
+        url = reverse('user:user_list')
         fixed_data = {
             'Rating': 50.0,
             'DeActivate': False,
@@ -41,6 +45,6 @@ class AddUserTest(APITestCase):
 
     def test_get_user(self):
         self._create_users()
-        response = self.client.get(reverse('user_detail', args=[self.user1.id]))
+        response = self.client.get(reverse('user:user_detail', args=[self.user1.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, UserEntrySerializer(self.user1).data)

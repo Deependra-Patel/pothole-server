@@ -1,12 +1,13 @@
-from django.http import Http404
-
-from .serializers import *
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from django.db.models import Q
+from django.http import Http404
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from complaint.models import Complaint
 from complaint.serializers import ComplaintEntrySerializer
+
+from .serializers import *
 
 
 class UserList(APIView):
@@ -68,7 +69,6 @@ class UserFromEmail(APIView):
             serializer = UserEntrySerializer(user)
             return Response(serializer.data)
         except Exception as e:
-            print e.message
             raise Http404
 
 
@@ -78,6 +78,7 @@ class UserGetComplaintForReview(APIView):
     """
 
     def get(self, request, pk, format=None):
-        complaints = Complaint.objects.filter(Q(Status='a') & ~Q(ReporterId=pk)).exclude(review__UserId=pk)[:3]
+        complaints = Complaint.objects.filter(Q(Status='a') & ~Q(ReporterId=pk)).exclude(
+            review__UserId=pk)[:3]
         complaints = ComplaintEntrySerializer(complaints, many=True)
         return Response(complaints.data)
