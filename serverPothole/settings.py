@@ -22,6 +22,9 @@ SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'xkyj(3k#l1+#k*%f6u1r0@c5w=mi&lf8prpr_8&8u85$b#0-#p'
 
+# Setting user model
+AUTH_USER_MODEL = 'user.User'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

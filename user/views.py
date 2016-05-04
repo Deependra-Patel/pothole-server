@@ -1,4 +1,6 @@
-from django.db.models import Q
+"""
+user app views
+"""
 from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
@@ -6,8 +8,8 @@ from rest_framework.views import APIView
 
 from complaint.models import Complaint
 from complaint.serializers import ComplaintEntrySerializer
-
-from .serializers import *
+from user.models import User
+from .serializers import UserEntrySerializer
 
 
 class UserList(APIView):
@@ -52,23 +54,18 @@ class UserDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
-        user = self.get_object(pk)
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class UserFromEmail(APIView):
     """
-    Gives user details given Email
+    Gives user details given Email(Only not deActivated users)
     """
 
     def post(self, request, format=None):
         try:
-            user = User.objects.filter(Email=request.data["Email"])[0]
+            user = User.objects.get(Email=request.data["Email"], DeActivate=False)
             serializer = UserEntrySerializer(user)
             return Response(serializer.data)
-        except Exception as e:
+        except User.DoesNotExist:
             raise Http404
 
 
@@ -78,7 +75,7 @@ class UserGetComplaintForReview(APIView):
     """
 
     def get(self, request, pk, format=None):
-        complaints = Complaint.objects.filter(Q(Status='a') & ~Q(ReporterId=pk)).exclude(
+        complaints = Complaint.objects.filter(Status='a').exclude(ReporterId=pk).exclude(
             review__UserId=pk)[:3]
         complaints = ComplaintEntrySerializer(complaints, many=True)
         return Response(complaints.data)
