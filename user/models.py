@@ -2,14 +2,49 @@
 Model for storing user details
 """
 
-from django.contrib.auth.models import AbstractBaseUser, UserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.gis.db import models
 from django.core.validators import RegexValidator
 
 from core.utils import CITIES
 
 
-class User(AbstractBaseUser):
+class MyUserManager(BaseUserManager):
+    def create_user(self, Email, Name, City, Phone, password=None):
+        """
+        Creates and saves a User with the given Email, Name, city, phone
+        """
+        if not Email:
+            raise ValueError('Users must have an Email address')
+
+        user = self.model(
+            Email=MyUserManager.normalize_email(Email),
+            Name=Name,
+            City=City,
+            Phone=Phone,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, Email, Name, City, Phone, password):
+        """
+        Creates and saves a superuser with the given email, name, city, phone and password
+        """
+        print("dd", Email, Name, City, Phone, password)
+        u = self.create_user(Email=Email,
+                             Name=Name,
+                             City=City,
+                             Phone=Phone,
+                             password=password,
+                             )
+        u.is_admin = True
+        u.save(using=self._db)
+        return u
+
+
+class User(AbstractBaseUser, PermissionsMixin):
     """
     User model to store all the user related information
     """
@@ -26,7 +61,8 @@ class User(AbstractBaseUser):
     Credit = models.FloatField(default=0)
     DeActivate = models.BooleanField(default=False)
     Created = models.DateTimeField(auto_now_add=True)
-    objects = UserManager()
+    is_admin = models.BooleanField(default=False)
+    objects = MyUserManager()
 
     USERNAME_FIELD = 'Email'
     REQUIRED_FIELDS = ['Name', 'City', 'Phone']
@@ -41,3 +77,16 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.Email
+
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        return self.is_admin
+
+    @property
+    def is_staff(self):
+        """
+        Is the user a member of staff?
+        """
+        return self.is_admin

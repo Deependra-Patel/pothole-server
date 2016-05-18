@@ -1,19 +1,21 @@
-from __future__ import unicode_literals
-
 from django.db import models
 from complaint.models import Complaint
 from user.models import User
+from core.utils import REVIEW_RESPONSE_TYPE
 
 
 class Review(models.Model):
+    """
+    All reviews of complaints are stored here
+    """
     ComplaintId = models.ForeignKey(Complaint)
     UserId = models.ForeignKey(User)
-    Response = models.CharField(max_length=1) #y-yes it is a pothole, n-not pothole, m-maybe
+    Response = models.CharField(max_length=1, choices=REVIEW_RESPONSE_TYPE)
     Comment = models.CharField(max_length=100, null=True, blank=True)
     Created = models.DateTimeField(auto_now_add=True)
 
-    """
-    To ensure one user per complaint
-    """
     class Meta:
+        """
+        To ensure one user per complaint
+        """
         unique_together = ('ComplaintId', 'UserId')

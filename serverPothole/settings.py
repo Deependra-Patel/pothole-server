@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'user',
     'complaint',
     'review',
+    'web',
+    'core',
     'rest_framework',
 ]
 

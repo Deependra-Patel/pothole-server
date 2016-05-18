@@ -14,6 +14,12 @@ COMPLAINT_STATUS = [
     ['f', 'False'],
 ]
 
+REVIEW_RESPONSE_TYPE = [
+    ['y', 'Yes'],
+    ['n', 'No'],
+    ['m', 'Not Sure']
+]
+
 CITIES = [
     ['mum', 'Mumbai'],
 ]
